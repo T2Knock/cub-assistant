@@ -32,8 +32,8 @@ export const sendPromptForObject = async (prompt: string) => {
     schema: z.object({
       recipe: z.object({
         name: z.string(),
-        ingredients: z.array(z.string()),
-        steps: z.array(z.string()),
+        ingredients: z.array(z.string()).min(1),
+        steps: z.array(z.string()).min(1),
       }),
     }),
     prompt,
@@ -46,19 +46,17 @@ export const sendPromptForObject = async (prompt: string) => {
 };
 
 export const parseCommandFromInput = async (prompt: string) => {
-  const output = await generateObject({
+  return await generateObject({
     model,
     schema: z.object({
       recipe: z.object({
         name: z.string(),
-        ingredients: z.array(
-          z.object({ name: z.string(), amount: z.string() }),
-        ),
-        steps: z.array(z.string()),
+        ingredients: z
+          .array(z.object({ name: z.string(), amount: z.string() }))
+          .min(1),
+        steps: z.array(z.string()).min(1),
       }),
     }),
     prompt,
   });
-
-  return output;
 };
